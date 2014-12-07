@@ -157,7 +157,7 @@ public class FilterAndClean {
 		int length = timeSeries.length;
 		int count = 0;
 		int start = getMaxIndex(timeSeries);
-		for (int i = start; i < length; i++) {
+		for (int i = start; i < length - sharpness; i++) {
 			if (timeSeries[i] > thres) {
 				if ((timeSeries[i] > timeSeries[i + sharpness])
 						&& (timeSeries[i] > timeSeries[i - sharpness])) {

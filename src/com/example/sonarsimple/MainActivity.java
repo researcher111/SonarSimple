@@ -49,10 +49,12 @@ public class MainActivity extends Activity {
     	final SeekBar seekBar = (SeekBar)findViewById(R.id.seekBar1); 
     
     	seekBar.setProgress(22);
+    	 final TextView seekBarValue = (TextView)findViewById(R.id.ProgressValue); 
+    	  seekBarValue.setText(String.valueOf(seekBar.getProgress())); 
     	final Sonar sonsys = new Sonar(seekBar.getProgress(), getApplicationContext());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){ 
-       final TextView seekBarValue = (TextView)findViewById(R.id.ProgressValue); 
-
+      
+     
         	   @Override 
         	   public void onProgressChanged(SeekBar seekBar, int progress, 
         	     boolean fromUser) { 
@@ -80,8 +82,8 @@ public class MainActivity extends Activity {
 		    	//sonarSystem.playPluse();
 
 				
-				double[] distances = new double[10];
-				for(int i=0 ; i< 10; i++ ){
+				//double[] distances = new double[10];
+				//for(int i=0 ; i< 10; i++ ){
 				sonsys.thresholdPeak = seekBar.getProgress();
 				//final long startTime = System.currentTimeMillis();
 				sonsys.run();
@@ -91,27 +93,27 @@ public class MainActivity extends Activity {
 		    	//readingView.setText(Double.toString(sonsys.distance));
 		    	//
 				String distanceMeters = df.format(sonsys.result.distance);
-		    	//String distanceFeet = df.format(sonsys.result.distance*3.28084);
-		    	distances[i] = sonsys.result.distance;
+		    	String distanceFeet = df.format(sonsys.result.distance*3.28084);
+		    	//distances[i] = sonsys.result.distance;
 		    	//This diplays the reading from them tempature sensor 
 		    	//String distanceFeet = df.format(TempSense.tempature);
 		    	
-		    	//readingView.setText(distanceMeters);
-		    	//feetView.setText(distanceFeet);
+		    	readingView.setText(distanceMeters);
+		    	feetView.setText(distanceFeet);
 		    	if(distanceMeters.equals("0")){ //Bad Reading so we get zero zero
-		    	// Toast.makeText(getApplicationContext(), "Bad Reading Try Adjusting The Treshold", Toast.LENGTH_LONG).show();
-		    		i--;
+		    	 Toast.makeText(getApplicationContext(), "Bad Reading Try Adjusting The Treshold", Toast.LENGTH_LONG).show();
+		    		//i--;
 		    	}
-		    	if(!distanceMeters.equals("0")){
-		    		sumArray =  getSumArray(convertFromShortArrayToDoubleArray(sonsys.result.signal), sumArray);
-		    		sumArray = divideArray(sumArray ,10);
-		    		xcorrSum =  getSumArray(sonsys.result.xcorr, xcorrSum);
-		    		xcorrSum = divideArray(xcorrSum ,10);
-		    	}
-				}
-		    	GraphViewSeries exampleSeries =new GraphViewSeries(generateSeries(xcorrSum)); //new GraphViewSeries(generateSeries(sonsys.result.xcorr));
+		    	//if(!distanceMeters.equals("0")){
+		    	//	sumArray =  getSumArray(convertFromShortArrayToDoubleArray(sonsys.result.signal), sumArray);
+		    	//	sumArray = divideArray(sumArray ,10);
+		    	//	xcorrSum =  getSumArray(sonsys.result.xcorr, xcorrSum);
+		    	//	xcorrSum = divideArray(xcorrSum ,10);
+		    	//}
+				//}
+		    	GraphViewSeries exampleSeries = new GraphViewSeries(generateSeries(sonsys.result.xcorr));
 		    	//exampleSeries.resetData(generateSeries(sonsys.result.signal));
-		    	GraphViewSeries constantline = new GraphViewSeries(generateConstantLine(seekBar.getProgress()/10,sonsys.result.xcorr.length));
+		    	GraphViewSeries constantline = new GraphViewSeries(generateConstantLine(seekBar.getProgress(),sonsys.result.xcorr.length));
 		    	graphView.addSeries(exampleSeries); // data
 		    	graphView.addSeries(constantline);
 		    	graphView.setViewPort(1, 2000);  
@@ -119,8 +121,8 @@ public class MainActivity extends Activity {
 		    	// optional - activate scaling / zooming  
 		    	graphView.setScalable(true);
 		    	
-		    	GraphViewSeries exampleSeriesSignal = new GraphViewSeries(generateSeries(sumArray)); //new GraphViewSeries(generateSeries(sonsys.result.signal));
-		    	//exampleSeries.resetData(generateSeries(sonsys.result.signal))//exampleSeries.resetData(generateSeries(sonsys.result.signal));
+		    	GraphViewSeries exampleSeriesSignal = new GraphViewSeries(generateSeries(sonsys.result.signal));
+		    	//exampleSeries.resetData(generateSeries(sonsys.result.signal));//exampleSeries.resetData(generateSeries(sonsys.result.signal));
 		    	graphViewSignal.addSeries(exampleSeriesSignal); // data  
 		    	graphViewSignal.setViewPort(1, 2000);  
 		    	graphViewSignal.setScrollable(true);  
@@ -128,8 +130,8 @@ public class MainActivity extends Activity {
 		    	graphViewSignal.setScalable(true);
 				
 				
-				readingView.setText(getAverage(distances)+"");	
-				feetView.setText(getSTDEV(distances)+"");
+				//readingView.setText(getAverage(distances)+"");	
+				//feetView.setText(getSTDEV(distances)+"");
 		    }
 		});
 		
@@ -139,42 +141,7 @@ public class MainActivity extends Activity {
 		LinearLayout layout2 = (LinearLayout) findViewById(R.id.layout2);  
 		layout2.addView(graphViewSignal);  
 		
-		// init example series data  
-		
-		
-//	
-//		
-//		// graph with dynamically genereated horizontal and vertical labels  
-//		GraphView graphViewSignal = new LineGraphView(  
-//		  this  
-//		  , signal
-//		  , "Raw Signal"  
-//		  , null  
-//		  , null  
-//		);  
-//		// set view port, start=2, size=10  
-//		graphViewSignal.setViewPort(2, 10);  
-//		graphViewSignal.setScalable(true);  
-//		//graphView.setDrawBackground(true);  
-//		LinearLayout layout = (LinearLayout) findViewById(R.id.graphViewSignalLayout);  
-//		layout.addView(graphViewSignal); 
-//		
-//		
-//		// graph with dynamically genereated horizontal and vertical labels  
-//		GraphView graphViewFilteredSignal = new LineGraphView(  
-//		  this  
-//		  , data  
-//		  , "Filtered Signal "  
-//		  , null  
-//		  , null  
-//		);  
-//		// set view port, start=2, size=10  
-//		graphViewFilteredSignal.setViewPort(2, 10);  
-//		graphViewFilteredSignal.setScalable(true);  
-//		//graphView.setDrawBackground(true);  
-//		LinearLayout layoutFilter = (LinearLayout) findViewById(R.id.graphViewFilteredLayout);  
-//		layout.addView(graphViewFilteredSignal); 
-//		
+	
 		
 	}
 	
