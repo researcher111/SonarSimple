@@ -99,7 +99,6 @@ public class Sonar extends Thread {
 
 			recorder.startRecording();
 			track.write(pulse, 0, pulse.length);
-
             track.play();
 			recorder.read(buffer, 0, buffer.length);
 

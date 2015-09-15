@@ -153,7 +153,7 @@ public class FilterAndClean {
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	public static int[] peakIndex(double[] timeSeries, double thres,
 			 int sharpness) {
-		int[] peaks = new int[600];
+		int[] peaks = new int[2];
 		int length = timeSeries.length;
 		int count = 0;
 		int start = getMaxIndex(timeSeries);
@@ -162,9 +162,10 @@ public class FilterAndClean {
 				if ((timeSeries[i] > timeSeries[i + sharpness])
 						&& (timeSeries[i] > timeSeries[i - sharpness])) {
 					peaks[count] = i;
-					//if(count < 1){
+
+					if(count < 1){
 						count++;
-					//}
+					}
 					
 					i+=10; // For bumbs
 				
@@ -186,3 +187,4 @@ public class FilterAndClean {
 	 */
 
 }
+
